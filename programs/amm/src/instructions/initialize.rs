@@ -1,33 +1,57 @@
 use anchor_lang::prelude::*;
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
-use crate::{constants::*, state::Counter};
+use crate::{Pool, POOL_SEED};
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub authority: Signer<'info>,
+    pub mint_a: Account<'info, Mint>,
+    pub mint_b: Account<'info, Mint>,
+
     #[account(
         init,
-        payer = payer,
-        space = 8 + Counter::INIT_SPACE,
-        seeds = [COUNTER_SEED],
+        payer = authority,
+        space = 8 + Pool::INIT_SPACE,
+        seeds = [
+            POOL_SEED,
+            mint_a.key().as_ref(),
+            mint_b.key().as_ref()
+        ],
         bump
     )]
-    pub counter: Account<'info, Counter>,
+    pub pool: Account<'info, Pool>,
+
+    #[account(
+        init,
+        payer = authority,
+        token::mint = mint_a,
+        token::authority = pool,
+    )]
+    pub vault_a: Account<'info, TokenAccount>,
+
+    #[account(
+        init,
+        payer = authority,
+        token::mint = mint_b,
+        token::authority = pool,
+    )]
+    pub vault_b: Account<'info, TokenAccount>,
+
     pub system_program: Program<'info, System>,
+
+    pub token_program: Program<'info, Token>,
 }
 
-pub fn handle_initialize(ctx: Context<Initialize>) -> Result<()> {
-    ctx.accounts.counter.count = 0;
-    ctx.accounts.counter.authority = ctx.accounts.payer.key();
+impl<'info> Initialize<'info> {
+    pub fn handle_initialize(&mut self, bump: u8) {
+        self.pool.mint_a = self.mint_a.key();
+        self.pool.mint_b = self.mint_b.key();
 
-    let cpi_accounts = anchor_lang::system_program::Transfer {
-        from: ctx.accounts.payer.to_account_info(),
-        to: ctx.accounts.counter.to_account_info(),
-    };
-    let cpi_ctx = CpiContext::new(anchor_lang::system_program::ID, cpi_accounts);
-    anchor_lang::system_program::transfer(cpi_ctx, HELLO_WORLD_LAMPORTS)?;
+        self.pool.vault_a = self.vault_a.key();
+        self.pool.vault_b = self.vault_b.key();
 
-    msg!("Hello, world! Counter initialized");
-    Ok(())
+        self.pool.bump = bump;
+    }
 }
