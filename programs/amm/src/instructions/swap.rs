@@ -20,33 +20,33 @@ pub struct Swap<'info> {
         ],
         bump = pool.bump,
     )]
-    pub pool: Account<'info, Pool>,
+    pub pool: Box<Account<'info, Pool>>,
 
     #[account(
         mut,
         token::mint = pool.mint_a,
         token::authority = authority,
     )]
-    pub user_token_a: Account<'info, TokenAccount>,
+    pub user_token_a: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
         token::mint = pool.mint_b,
         token::authority = authority,
     )]
-    pub user_token_b: Account<'info, TokenAccount>,
+    pub user_token_b: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.vault_a)]
-    pub vault_a: Account<'info, TokenAccount>,
+    pub vault_a: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.vault_b)]
-    pub vault_b: Account<'info, TokenAccount>,
+    pub vault_b: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.treasury_a)]
-    pub treasury_a: Account<'info, TokenAccount>,
+    pub treasury_a: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.treasury_b)]
-    pub treasury_b: Account<'info, TokenAccount>,
+    pub treasury_b: Box<Account<'info, TokenAccount>>,
 
     pub token_program: Program<'info, Token>,
 }

@@ -17,24 +17,24 @@ pub struct Withdraw<'info> {
         ],
         bump = pool.bump,
     )]
-    pub pool: Account<'info, Pool>,
+    pub pool: Box<Account<'info, Pool>>,
 
     #[account(mut, address = pool.lp_mint)]
-    pub lp_mint: Account<'info, Mint>,
+    pub lp_mint: Box<Account<'info, Mint>>,
 
     #[account(
         mut,
         token::mint = pool.mint_a,
         token::authority = authority,
     )]
-    pub user_token_a: Account<'info, TokenAccount>,
+    pub user_token_a: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
         token::mint = pool.mint_b,
         token::authority = authority,
     )]
-    pub user_token_b: Account<'info, TokenAccount>,
+    pub user_token_b: Box<Account<'info, TokenAccount>>,
 
     /// LP tokens being handed back in.
     #[account(
@@ -42,13 +42,13 @@ pub struct Withdraw<'info> {
         token::mint = lp_mint,
         token::authority = authority,
     )]
-    pub user_lp: Account<'info, TokenAccount>,
+    pub user_lp: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.vault_a)]
-    pub vault_a: Account<'info, TokenAccount>,
+    pub vault_a: Box<Account<'info, TokenAccount>>,
 
     #[account(mut, address = pool.vault_b)]
-    pub vault_b: Account<'info, TokenAccount>,
+    pub vault_b: Box<Account<'info, TokenAccount>>,
 
     pub token_program: Program<'info, Token>,
 }
