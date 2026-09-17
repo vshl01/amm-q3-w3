@@ -23,4 +23,8 @@ pub mod amm_q3_w3 {
     pub fn deposit(ctx: Context<Deposit>, amount_a: u64, amount_b: u64) -> Result<()> {
         ctx.accounts.handle_deposit(amount_a, amount_b)
     }
+
+    pub fn swap(ctx: Context<Swap>, amount_in: u64) -> Result<()> {
+        ctx.accounts.swap(amount_in)
+    }
 }
