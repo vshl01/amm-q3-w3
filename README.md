@@ -21,6 +21,19 @@ LP tokens, a configurable swap fee and per-pool treasury accounts.
 
 ---
 
+## The whole thing on one page
+
+![AMM architecture — account model, instructions, math and tests](programs/amm/docs/amm.png)
+
+Account model, all four instructions with their token flows and guards, the
+hand-written math, and the test breakdown. Source is
+[`architecture.excalidraw`](programs/amm/docs/architecture.excalidraw) — open it
+at [excalidraw.com](https://excalidraw.com) to edit.
+
+The rest of this README is the same material in prose.
+
+---
+
 ## 1. The program
 
 Four instructions, all in [`programs/amm/src/instructions/`](programs/amm/src/instructions/).
